@@ -2,12 +2,12 @@
 
 #############################################################################################
 # PANDORA UNCHAINED by jfktrey
-# release 1, 2013-5-18
+# release 2, 2013-5-21
 #
 # Free your Pandora bookmarks and likes for use on other platforms.
 #############################################################################################
 
-import sys, os, json, csv, io, StringIO
+import sys, os, json, csv, cStringIO
 from collections import OrderedDict
 from string import Template
 
@@ -15,7 +15,8 @@ import twill.commands as Browser 	# These twill libraries are modified. See comm
 import twill.browser as _browser
 from twill.BeautifulSoup3 import BeautifulSoup
 
-LOGFILE					= open('log.txt', 'w')
+DEBUG					= False
+LOGFILE					= open('log.txt', 'w') if DEBUG else open(os.devnull, 'w')
 Browser.OUT				= LOGFILE
 _browser.OUT			= LOGFILE
 
@@ -147,22 +148,22 @@ def textFromSongList (songList):
 	return songText
 
 def csvFromSongList (songList):
-	songCsv		= StringIO.StringIO()
+	songCsv		= cStringIO.StringIO()
 	songList	= [['title', 'artist']] + songList
 
-	writer = csv.writer(songCsv, delimiter = '\t')
+	writer = csv.writer(songCsv, dialect='excel', quotechar='"', quoting=csv.QUOTE_ALL)
 
 	for song in songList:
 		writer.writerow(song)
 
-	return songCsv.getvalue()
+	return songCsv.getvalue().replace('\r\n', '\n')
 
 def makeSongListNoDuplicates (songList):
 	cleanedSongList = []
 
 	for song in songList:
-	    if song not in cleanedSongList:
-       		cleanedSongList.append(song)
+		if song not in cleanedSongList:
+	   		cleanedSongList.append(song)
 
 	return cleanedSongList
 

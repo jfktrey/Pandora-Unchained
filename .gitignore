@@ -1,1 +1,7 @@
 *.pyc
+pyinstaller-2.0/
+build/
+dist/
+*.log
+*.spec
+*.bat
